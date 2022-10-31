@@ -14,5 +14,3 @@ class UserRegisterForm(forms.ModelForm):
         confirm_password = cleaned_data.get('confirm_password')
         if not password==confirm_password:
             raise forms.ValidationError("Password does not match!")
-class VendorRegisterForm(forms.ModelForm):
-    pass
