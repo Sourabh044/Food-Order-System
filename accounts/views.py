@@ -5,15 +5,34 @@ from django.shortcuts import redirect, render
 from django.contrib import messages, auth
 
 from accounts.models import User, UserProfile
+from accounts.utils import detectUser
 from vendor.forms import VendorRegisterForm
 from vendor.models import Vendor
 from .forms import UserRegisterForm
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.core.exceptions import PermissionDenied
+
+# Restrict Customer from acessing the Vendor Dashboard
+def check_role_vendor(user):
+    if user.role == 1:
+        return True
+    else:
+        raise PermissionDenied
+
+
+# Restrict the Vendor from accessing the Customer
+def check_role_customer(user):
+    if user.role == 2:
+        return True
+    else:
+        raise PermissionDenied
+
 
 # Create your views here.
 def Register_User(request):
     if request.user.is_authenticated:
-        messages.warning(request,"You are already Logged in.!")
+        messages.warning(request, "You are already Logged in.!")
         return redirect("Dashboard")
 
     if request.method == "POST":
@@ -39,7 +58,7 @@ def Register_User(request):
 
 def Register_Vendor(request):
     if request.user.is_authenticated:
-        messages.warning(request,"You are already Logged in.!")
+        messages.warning(request, "You are already Logged in.!")
         return redirect("Dashboard")
 
     if request.method == "POST":
@@ -80,8 +99,8 @@ def Register_Vendor(request):
 
 def Login_User(request):
     if request.user.is_authenticated:
-        messages.warning(request,"You are already Logged in.!")
-        return redirect("Dashboard")
+        messages.warning(request, "You are already Logged in.!")
+        return redirect("Home")
 
     elif request.method == "POST":
         email = request.POST.get("email")
@@ -90,23 +109,43 @@ def Login_User(request):
         if not user is None:
             auth.login(request, user)
             messages.success(request, "You are now logged in")
-            return redirect("Dashboard")
+            return redirect("My-Account")
         else:
             messages.error(request, "Invalid Login Credenatials")
-            return redirect("Login-User")
+            return redirect("Login")
     return render(request, "accounts/login.html")
 
 
 def Logout_User(request):
     auth.logout(request)
-    return redirect("Login-User")
+    return redirect("Login")
 
 
-def Dashboard(request):
+@login_required(login_url="Login")
+def Myaccount(request):
     if not request.user.is_authenticated:
-        messages.warning(request,"You Need To login!!")
-        return redirect("Login-User")
+        messages.warning(request, "You Need To login!!")
+        return redirect("Login")
+    user = request.user
+    redirecturl = detectUser(user)
+    return redirect(redirecturl)
+
+@user_passes_test(check_role_customer)
+def CustomerDashboard(request):
+    if not request.user.is_authenticated:
+        messages.warning(request, "You Need To login!!")
+        return redirect("Login")
     return render(
         request,
-        "accounts/dashboard.html",
+        "accounts/userdashboard.html",
+    )
+
+@user_passes_test(check_role_vendor)
+def VendorDashboard(request):
+    if not request.user.is_authenticated:
+        messages.warning(request, "You Need To login!!")
+        return redirect("Login")
+    return render(
+        request,
+        "accounts/vendordashboard.html",
     )

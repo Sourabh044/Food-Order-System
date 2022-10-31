@@ -15,7 +15,7 @@
                             <h3>Signin</h3>
                             <p>Hello World!!</p></div>
                             <div id="restaurant-sets-holder">
-                                <form action="{% url 'Login-User' %}" class="form-fields-set foodbakery-dev-restaurant-form" method="post"  enctype="multipart/form-data">
+                                <form action="{% url 'Login' %}" class="form-fields-set foodbakery-dev-restaurant-form" method="post"  enctype="multipart/form-data">
                                     {% csrf_token %}
                                     {% comment %} Form Here {% endcomment %}
                                         <div class="mb-3 " >

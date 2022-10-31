@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content  %}
+
+<p>Welcome <h1><strong>{{user.get_username}}</strong></h1></p>
+<hr>
+<p>This is a {{user.get_role}}</p>
+
+<div class="row">
+    <div class="container">
+        {% comment %}  Load Error Messages Here {% endcomment %}
+            {% include 'includes/alerts.html' %}
+        </div>
+    </div>
+</div>
+{% endblock %}
