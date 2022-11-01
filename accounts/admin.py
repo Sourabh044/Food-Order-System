@@ -15,4 +15,12 @@ class CustomUserAdmin(UserAdmin):
 
 
 admin.site.register(User, CustomUserAdmin)
+
+# class CustomUserProfileAdmin(UserAdmin):
+#     list_display = ("email", "first_name", "last_name", "role", "is_active")
+#     ordering = ("-date_joined",)
+#     filter_horizontal = ()
+#     list_filter = ()
+#     fieldsets = ()
+
 admin.site.register(UserProfile)
