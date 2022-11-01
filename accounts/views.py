@@ -1,17 +1,16 @@
-from cgi import print_arguments
-from re import L
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.contrib import messages, auth
 
 from accounts.models import User, UserProfile
-from accounts.utils import detectUser
+from accounts.utils import detectUser, send_verification_email
 from vendor.forms import VendorRegisterForm
 from vendor.models import Vendor
 from .forms import UserRegisterForm
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import PermissionDenied
+from django.contrib.auth.tokens import default_token_generator
 
 # Restrict Customer from acessing the Vendor Dashboard
 def check_role_vendor(user):
@@ -43,6 +42,7 @@ def Register_User(request):
             # user.password = user.set_password(request.POST.get('password'))
             user.password = make_password(request.POST.get("password"))
             user.save()
+            send_verification_email(request, user)
             messages.success(request, "Your Account has been created.")
             return redirect("Home")
         else:
@@ -70,6 +70,9 @@ def Register_Vendor(request):
             # user.password = user.set_password(request.POST.get('password'))
             user.password = make_password(request.POST.get("password"))
             user.save()
+            mail_subject = "Confirm Your Registration"
+            template_name = "accounts/emails/account_password_reset_email.html"
+            send_verification_email(request, user, mail_subject, template_name)
             vendor = v_form.save(commit=False)
             vendor.user = user
             vendor.user_profile = UserProfile.objects.get(user=user)
@@ -130,6 +133,7 @@ def Myaccount(request):
     redirecturl = detectUser(user)
     return redirect(redirecturl)
 
+
 @user_passes_test(check_role_customer)
 def CustomerDashboard(request):
     if not request.user.is_authenticated:
@@ -140,6 +144,7 @@ def CustomerDashboard(request):
         "accounts/userdashboard.html",
     )
 
+
 @user_passes_test(check_role_vendor)
 def VendorDashboard(request):
     if not request.user.is_authenticated:
@@ -149,3 +154,89 @@ def VendorDashboard(request):
         request,
         "accounts/vendordashboard.html",
     )
+
+
+def Activate(request, uidb64, token):
+    try:
+        print(type(uidb64), type(token))
+        from django.utils.encoding import force_bytes, force_str
+        from django.utils.http import urlsafe_base64_decode
+
+        uid = urlsafe_base64_decode(uidb64).decode()
+        # print(uid)
+        user = User._default_manager.get(id=uid)
+        # print(user)
+    except (OverflowError, User.DoesNotExist, TypeError, ValueError) as e:
+        print(e)
+        user = None
+    if user is not None and default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.save()
+        messages.success(request, "Your Account has been Verified")
+        return redirect("My-Account")
+    else:
+        messages.error(request, "Invalid Token Address")
+        return redirect("My-Account")
+
+
+def Forgot_Password(request):
+    if request.user.is_authenticated:
+        messages.warning(request, "You are already Logged in.!")
+        return redirect("Home")
+    if request.method == "POST":
+        email = request.POST.get("email")
+        if User.objects.filter(email=email).exists():
+            user = User.objects.get(email__exact=email)
+            # sending the password resetting maiil
+            mail_subject = "Reset Password"
+            template_name = "accounts/emails/account_password_reset_email.html"
+            send_verification_email(request, user, mail_subject, template_name)
+            messages.success(request, "Reset link has been sent")
+            return redirect("Login")
+        else:
+            messages.error(request, "User with email does not exist!")
+            return redirect("Forgot-Password")
+
+    return render(request, "accounts/forgot-password.html")
+
+
+def Reset_Password_Validate(request, uidb64, token):
+    try:
+        print(type(uidb64), type(token))
+        from django.utils.encoding import force_bytes, force_str
+        from django.utils.http import urlsafe_base64_decode
+
+        uid = urlsafe_base64_decode(uidb64).decode()
+        print(uid)
+        user = User._default_manager.get(id=uid)
+        print(user)
+    except (OverflowError, User.DoesNotExist, TypeError, ValueError) as e:
+        print(e)
+        user = None
+    if user is not None and default_token_generator.check_token(user, token):
+        request.session["uid"] = uid
+        messages.success(request, "Please Enter Your New Password")
+        return redirect("Reset-Password")
+    else:
+        messages.error(request, "expired token")
+        return redirect("Login")
+
+
+def Reset_Password(request):
+    if request.user.is_authenticated:
+        messages.warning(request, "You are already Logged in.!")
+        return redirect("Home")
+    if request.method == "POST":
+        password = request.POST.get("password")
+        confirmpassword = request.POST.get("confirmpassword")
+        if password == confirmpassword:
+            pk = request.session["uid"]
+            user = User.objects.get(id=pk)
+            user.set_password(password) 
+            user.save()
+            messages.success(request, "Your password is changed!")
+            return redirect('Login')
+        else:
+            messages.error(request, "Password does not match!!")
+            return redirect("Reset-password")
+    return render(request, "accounts/reset-password.html")
