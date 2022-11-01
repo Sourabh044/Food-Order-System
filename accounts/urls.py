@@ -12,4 +12,5 @@ urlpatterns = [
     path('forgot-password',Forgot_Password,name='Forgot-Password'),
     path('reset-password-validate/<uidb64>/<token>/',Reset_Password_Validate,name='Reset-Password-Validate'),
     path('reset-password/',Reset_Password,name='Reset-Password'),
+    path('vendor/',include('vendor.urls')),
 ]

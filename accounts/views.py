@@ -42,7 +42,9 @@ def Register_User(request):
             # user.password = user.set_password(request.POST.get('password'))
             user.password = make_password(request.POST.get("password"))
             user.save()
-            send_verification_email(request, user)
+            mail_subject = "Confirm Your Registration"
+            template_name = "accounts/emails/account_verification_email.html"
+            send_verification_email(request, user, mail_subject, template_name)
             messages.success(request, "Your Account has been created.")
             return redirect("Home")
         else:
@@ -71,7 +73,7 @@ def Register_Vendor(request):
             user.password = make_password(request.POST.get("password"))
             user.save()
             mail_subject = "Confirm Your Registration"
-            template_name = "accounts/emails/account_password_reset_email.html"
+            template_name = "accounts/emails/account_verification_email.html"
             send_verification_email(request, user, mail_subject, template_name)
             vendor = v_form.save(commit=False)
             vendor.user = user
@@ -163,9 +165,7 @@ def Activate(request, uidb64, token):
         from django.utils.http import urlsafe_base64_decode
 
         uid = urlsafe_base64_decode(uidb64).decode()
-        # print(uid)
         user = User._default_manager.get(id=uid)
-        # print(user)
     except (OverflowError, User.DoesNotExist, TypeError, ValueError) as e:
         print(e)
         user = None

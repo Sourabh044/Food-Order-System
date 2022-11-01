@@ -1,0 +1,14 @@
+{% autoescape off %}
+
+Hi {{user.get_username}},
+
+{% if is_approved %}
+
+<h1>Cogratulations you have been Approved.</h1>
+{% else %}
+
+<h4>We are Sorry You are not eligible for the Publishing.</h4>
+
+{% endif %}
+
+{% endautoescape %}
