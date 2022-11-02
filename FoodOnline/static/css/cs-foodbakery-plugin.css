@@ -68,13 +68,13 @@
 #main .login-form .social-media li a, #main .signup-form .social-media li a { padding-right: 10px; }
 /* Header Style End 
 /* Alerts Style */
-.login-form .alert-danger, .login-form .alert-info { background-color: inherit; background-image: none; border: none; -webkit-box-shadow: none; box-shadow: none; color: #b63a2b; display: block; margin: 0 0 10px; padding: 0; position: relative; }
+/* .login-form .alert-danger, .login-form .alert-info { background-color: inherit; background-image: none; border: none; -webkit-box-shadow: none; box-shadow: none; color: #b63a2b; display: block; margin: 0 0 10px; padding: 0; position: relative; }
 .login-form .alert-info { color: #b3b6c0; letter-spacing: 1px; line-height: 24px; margin: 0 0 20px; }
 .login-form .alert i { display: inline-block; padding: 0 5px 0 0; }
 .login-form .alert-danger span { color: #f97456; }
 .login-form .alert button.close { color: #aaa; font-size: 24px; opacity: 1; position: absolute; right: 15px; top: 10px; }
 .login-form .alert-danger p { color: #b63a2b !important; font-size: 13px; }
-.login-form .alert-success p { color: #3C0 !important; }
+.login-form .alert-success p { color: #3C0 !important; } */
 /* resturant detail menu start */
 .login-form .g-recaptcha { -webkit-transform: scale(1.15); -moz-transform: scale(1.1); -ms-transform: scale(1.1); transform: scale(1.1); -webkit-transform-origin: 0 0; -moz-transform-origin: 0 0; -ms-transform-origin: 0 0; transform-origin: 0 0; }
 .login-form .recaptcha-reload { margin-bottom: 30px; }

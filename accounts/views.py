@@ -14,19 +14,23 @@ from django.contrib.auth.tokens import default_token_generator
 
 # Restrict Customer from acessing the Vendor Dashboard
 def check_role_vendor(user):
-    if user.role == 1:
-        return True
-    else:
+    try:
+        if user.role == 1:
+            return True
+        else:
+            raise PermissionDenied
+    except:
         raise PermissionDenied
-
 
 # Restrict the Vendor from accessing the Customer
 def check_role_customer(user):
-    if user.role == 2:
-        return True
-    else:
+    try:
+        if user.role == 2:
+            return True
+        else:
+            raise PermissionDenied
+    except:
         raise PermissionDenied
-
 
 # Create your views here.
 def Register_User(request):
@@ -128,7 +132,7 @@ def Logout_User(request):
 
 @login_required(login_url="Login")
 def Myaccount(request):
-    if not request.user.is_authenticated:
+    if request.user.is_anonymous:
         messages.warning(request, "You Need To login!!")
         return redirect("Login")
     user = request.user
@@ -138,7 +142,7 @@ def Myaccount(request):
 
 @user_passes_test(check_role_customer)
 def CustomerDashboard(request):
-    if not request.user.is_authenticated:
+    if request.user.is_anonymous:
         messages.warning(request, "You Need To login!!")
         return redirect("Login")
     return render(
@@ -149,13 +153,12 @@ def CustomerDashboard(request):
 
 @user_passes_test(check_role_vendor)
 def VendorDashboard(request):
-    if not request.user.is_authenticated:
-        messages.warning(request, "You Need To login!!")
-        return redirect("Login")
-    return render(
-        request,
-        "accounts/vendordashboard.html",
-    )
+    # if request.is_anonymous:
+    #     messages.warning(request, "You Need To login!!")
+    #     return redirect("Login")
+    vendor = Vendor.objects.get(user=request.user)
+    context = {"vendor": vendor}
+    return render(request, "accounts/vendordashboard.html", context)
 
 
 def Activate(request, uidb64, token):
@@ -232,10 +235,10 @@ def Reset_Password(request):
         if password == confirmpassword:
             pk = request.session["uid"]
             user = User.objects.get(id=pk)
-            user.set_password(password) 
+            user.set_password(password)
             user.save()
             messages.success(request, "Your password is changed!")
-            return redirect('Login')
+            return redirect("Login")
         else:
             messages.error(request, "Password does not match!!")
             return redirect("Reset-password")
