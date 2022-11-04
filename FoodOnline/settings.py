@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "accounts",
     "vendor",
+    "menu",
 ]
 
 MIDDLEWARE = [
@@ -67,11 +68,13 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "accounts.context_processors.get_vendor"
+                "accounts.context_processors.get_vendor",
+                "accounts.context_processors.get_google_api_key",
             ],
         },
     },
 ]
+
 
 WSGI_APPLICATION = "FoodOnline.wsgi.application"
 
@@ -159,3 +162,6 @@ EMAIL_HOST_USER = config("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = f'FoodOnline <{config("DEFAULT_FROM_EMAIL")}>'
+
+
+GOOGLE_API_KEY = "AIzaSyCo3U6mImBDuwzikz06NvUGYyjNZp3lLhk"

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content  %}
+{{ value|linebreaks }}
+{{ value|linebreaksbr }}
+
+<body>
+	<!--Main Wrapper-->
+	<div class="wrapper">
+		<!-- Main Section Start -->
+		<div class="main-section">
+			{% include 'includes/cover.html' %}
+			<div class="page-section account-header buyer-logged-in">
+				<div class="container">
+					<div class="row">
+						<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+							{% include 'includes/v_sidebar.html' %}
+						</div>
+						<div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+							<div class="user-dashboard loader-holder">
+								<div class="user-holder">
+								<h5 class="text-uppercase">Build You Food Menu</h5>	
+                                    <hr>
+                                    <h6>Category : <span class='text-success'>{{category}}</span> </h6>
+                                    <a class="btn btn-success float-end m-1" href="#"><i class="fa fa-plus" aria-hidden="true"></i> Add Food</a>
+                                    <a class="btn btn-info float-end m-1" href="#"><i class="fa fa-plus" aria-hidden="true"></i> Add Category</a>
+                                    <br>
+                                    <table class="table table-borderless table-hover">
+                                        <tbody>
+                                            {% for cat in food_items %}
+                                            <tr>
+                                                <td class="text-left">{{forloop.counter}}</td>
+                                                <td class="text-left"><img src="{{cat.image.url}}" alt="Food image here" width=40></td>
+                                                <td class="text-left"><a href=""><p class="my-0 font-weight-bold">{{cat}}</p>
+                                                <small class="text-muted">{{cat.description}}</small></a>
+                                            </td>
+                                                <td><a href=""><i class="fa fa-edit text-dark"></i></a> | <a href=""><i class="fa fa-trash text-danger"></i></a></td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                      </table>
+	
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Main Section End -->
+
+<div class="row">
+    <div class="container">
+        {% comment %}  Load Error Messages Here {% endcomment %}
+            {% include 'includes/alerts.html' %}
+        </div>
+    </div>
+</div>
+{% endblock %}
