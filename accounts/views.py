@@ -150,7 +150,7 @@ def CustomerDashboard(request):
         "accounts/userdashboard.html",
     )
 
-
+@login_required(login_url="Login")
 @user_passes_test(check_role_vendor)
 def VendorDashboard(request):
     # if request.is_anonymous:
