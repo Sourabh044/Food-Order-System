@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from .forms import VendorRegisterForm
 from accounts.forms import UserProfileForm
-from menu.forms import CategoryForm
+from menu.forms import CategoryForm, FoodItemForm
 from accounts.models import UserProfile
 from .models import Vendor
 from django.contrib import messages
@@ -65,8 +65,11 @@ def FoodItemByCategory(request, pk=None):
         "food_items": food_items,
         "category": category,
     }
-    print(food_items)
+    
     return render(request, "vendor/fooditems_by_categories.html", context)
+
+
+#  ------------------------- CRUD OF THE FOOOD ITEMS -----------------------------------
 
 
 def AddCategory(request):
@@ -90,7 +93,7 @@ def UpdateCategory(request, pk=None):
     if pk:
         category = get_object_or_404(Category, pk=pk)
         if request.method == "POST":
-            form = CategoryForm(request.POST,instance=category)
+            form = CategoryForm(request.POST, instance=category)
             if form.is_valid():
                 category_name = form.cleaned_data["category_name"]
                 category = form.save(commit=False)
@@ -98,24 +101,90 @@ def UpdateCategory(request, pk=None):
                 category.vendor = vendor
                 category.slug = slugify(category_name)
                 form.save()
-                messages.success(request,"Category updated successfully")
+                messages.success(request, "Category updated successfully")
                 return redirect("Menu-Builder")
             else:
-                print(form.errors)    
+                print(form.errors)
         else:
             form = CategoryForm(instance=category)
-        context = {"form": form,
-                    "category":category,            }
-        return render(request, "vendor/update-category.html",context)
+        context = {
+            "form": form,
+            "category": category,
+        }
+        return render(request, "vendor/update-category.html", context)
     else:
-        return redirect('403.html')
-    
-def DeleteCategory(request,pk=None):
-    if pk:
-        category = get_object_or_404(Category,pk=pk)
-        category.delete()
-        messages.success(request,'Category removed.')
-        return redirect('Menu-Builder')
-    else:
-        return redirect('403.html')
+        return redirect("403.html")
 
+
+def DeleteCategory(request, pk=None):
+    if pk:
+        category = get_object_or_404(Category, pk=pk)
+        category.delete()
+        messages.success(request, "Category removed.")
+        return redirect("Menu-Builder")
+    else:
+        return redirect("403.html")
+
+
+#  ------------------------- CRUD OF THE FOOOD ITEMS ------------------------------------#
+
+
+def AddFood(request):
+
+    if request.method == "POST":
+        form = FoodItemForm(request.POST, request.FILES)
+        if form.is_valid():
+            food_title = form.cleaned_data["food_title"]
+            fooditem = form.save(commit=False)
+            fooditem.vendor = get_vendor(request)
+            fooditem.slug = slugify(food_title)
+            form.save()
+            messages.success(request, "Food added successfully")
+            return redirect("Menu-Builder")
+        else:
+            print(form.errors)
+            return render(request, "vendor/add-food.html", context={"form": form})
+    form = FoodItemForm()
+    form.fields["category"].queryset = Category.objects.filter(
+        vendor=get_vendor(request)
+    )
+    context = {"form": form}
+    return render(request, "vendor/add-food.html", context)
+
+
+def UpdateFood(request, pk=None):
+    if pk:
+        food = get_object_or_404(FoodItem, pk=pk)
+        form = FoodItemForm(instance=food)
+        if request.method == "POST":
+            form = FoodItemForm(request.POST, instance=food)
+            if form.is_valid():
+                form.save()
+                messages.success(request, f"{food.food_title} Updated successfully")
+                return redirect("Menu-Builder")
+            else:
+                print(form.errors)
+
+        form.fields["category"].queryset = Category.objects.filter(
+            vendor=get_vendor(request)
+        )
+        context = {
+            "form": form,
+            "food": food,
+        }
+        # messages.success(request,'Food item deleted successfully')
+        return render(request, "vendor/update-food.html", context)
+    else:
+        messages.error(request, "Food does not exist.")
+
+
+def DeleteFood(request, pk=None):
+    if pk:
+        food = FoodItem.objects.get(id=pk)
+        food.delete()
+        messages.success(request, "Food item deleted successfully")
+        return redirect("Menu-Builder")
+    else:
+        messages.error(request, "Food does not exist.")
+        return redirect("Menu-Builder")
+        return redirect("Menu-Builder")

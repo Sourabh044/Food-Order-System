@@ -23,21 +23,29 @@
 								<h5 class="text-uppercase">Build You Food Menu</h5>	
                                     <button onclick="history.back()" class="btn btn-secondary mt-2 mb-2"><i class="fa fa-angle-left"></i>Back</button>
                                     <h6>Category : <span class='text-success'>{{category}}</span> </h6>
-                                    <a class="btn btn-success float-end m-1" href="#"><i class="fa fa-plus" aria-hidden="true"></i> Add Food</a>
-                                    <a class="btn btn-info float-end m-1" href="#"><i class="fa fa-plus" aria-hidden="true"></i> Add Category</a>
+                                    {% comment %} <a class="btn btn-success float-end m-1" href="{% url 'Add-Food' %}"><i class="fa fa-plus" aria-hidden="true"></i> Add Food</a> {% endcomment %}
+                                    {% comment %} <a class="btn btn-info float-end m-1" href="#"><i class="fa fa-plus" aria-hidden="true"></i> Add Category</a> {% endcomment %}
                                     <br>
                                     {% if food_items %}
                                     
                                     <table class="table table-borderless table-hover">
                                         <tbody>
-                                            {% for cat in food_items %}
+                                            {% for food in food_items %}
                                             <tr>
                                                 <td class="text-left">{{forloop.counter}}</td>
-                                                <td class="text-left"><img src="{{cat.image.url}}" alt="Food image here" width=40></td>
-                                                <td class="text-left"><a href=""><p class="my-0 font-weight-bold">{{cat}}</p>
-                                                    <small class="text-muted">{{cat.description}}</small></a>
+                                                <td class="text-left"><img src="{{food.image.url}}" alt="Food image here" width=40></td>
+                                                <td class="text-left"><a href=""><p class="my-0 font-weight-bold">{{food}}</p>
+                                                    <small class="text-muted">{{food.description}}</small></a>
                                                 </td>
-                                                <td><a href="{% url 'Update-Category' {{cat.id}} %}"><i class="fa fa-edit text-dark"></i></a> | <a href=""><i class="fa fa-trash text-danger"></i></a></td>
+                                                <td>
+                                                {% if food.is_available %}
+                                                
+                                                <span class="badge badge-secondary">Available</span>
+                                                {% else %}
+                                                <span class="badge badge-danger">Not Available</span>
+                                                {% endif %}
+                                                </td>
+                                                <td><a href="{% url 'Update-Food' food.id %}"><i class="fa fa-edit text-dark"></i></a> | <a href="{% url 'Delete-Food' food.id %}" onclick="return confirm('Are You sure you want to delete this Food?')"><i class="fa fa-trash text-danger"></i></a></td>
                                             </tr>
                                             {% endfor %}
                                         </tbody>
@@ -46,7 +54,7 @@
                                     
                                     <h5 class="text-center">No Food Items Found.</h5>
                                     <div class="text-center">
-                                        <a href="" class="btn btn-success"><i class="fa fa-plus" aria-hidden="true"></i> Add Food</a>
+                                        <a href="{% url 'Add-Food' %}" class="btn btn-success"><i class="fa fa-plus" aria-hidden="true"></i> Add Food</a>
                                     </div>
                                     {% endif %}
 

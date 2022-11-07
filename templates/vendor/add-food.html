@@ -20,23 +20,28 @@
 								<div class="user-holder">
 								<h5 class="text-uppercase">Build You Food Menu</h5>	
                                     <hr>
-                                    <h5>Update Category</h5>
-                                    {% comment %} <a class="btn btn-success float-end m-1" href="#"><i class="fa fa-plus" aria-hidden="true"></i> Add Food</a> {% endcomment %}
-                                    {% comment %} <a class="btn btn-info float-end m-1" href="#"><i class="fa fa-plus" aria-hidden="true"></i> Add Category</a> {% endcomment %}
+                                    <h5>Add New Food</h5>
                                     <br>
                                     {% comment %} Form Here {% endcomment %}
-                                    <form action="{% url 'Update-Category' category.id %}" method="POST">
+                                    <form action="{% url 'Add-Food' %}" method="post"  enctype="multipart/form-data">
                                         {% csrf_token %}
                                         <div class="form-fields-set">
                                             <div class="row">
-                                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                            <div class="col-lg-12 col-md-12 col-sm-12">
                                                     <div class="field-holder">
                                                         <label for="">Category Name</label>
-                                                        {{form.category_name}}
+                                                        {{form.category}}
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                            <div class="row">
+                                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                                    <div class="field-holder">
+                                                        <label for="">Food Name</label>
+                                                        {{form.food_title}}
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div class="row">
                                                 <div class="col-lg-12 col-md-12 col-sm-12">
                                                     <div class="field-holder">
@@ -45,7 +50,32 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <div class="row">
+                                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                                    <div class="field-holder">
+                                                        <label for="">Price</label>
+                                                        {{form.price}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                                    <div class="field-holder">
+                                                        <label for="">Food Image</label>
+                                                        {{form.image}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                                    <div class="field-holder">
+                                                        <label for="">Availability</label>
+                                                        {{form.is_available}}
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
+                                        </div> 
                                         <ul class="errorlist">
                                                 {% for fields in form  %}
                                                 {% if fields.errors %}
@@ -59,7 +89,7 @@
                                                 </li>
                                                 {% comment %} {{ form.errors.as_ul }} {% endcomment %}
                                             </ul>
-                                        <button type="submit" class="btn btn-success my-3"><i class="fa fa-check" aria-hidden="true"></i>Update</button>
+                                        <button type="submit" class="btn btn-success my-3"><i class="fa fa-check" aria-hidden="true"></i> Create</button>
                                     </form>
                                     
 								</div>

@@ -14,5 +14,11 @@ urlpatterns = [
     path("menu-builder/category/update/<int:pk>", UpdateCategory, name="Update-Category"),
     path("menu-builder/category/delete/<int:pk>", DeleteCategory, name="Delete-Category"),
 
+    # Food CRUD
+
+    path("menu-builder/food/add", AddFood, name="Add-Food"),
+    path("menu-builder/food/update/<int:pk>", UpdateFood, name="Update-Food"),
+    path("menu-builder/food/delete/<int:pk>", DeleteFood, name="Delete-Food"),
+
 
 ]
