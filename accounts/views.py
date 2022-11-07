@@ -11,7 +11,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.tokens import default_token_generator
-
+from django.template.defaultfilters import slugify
 # Restrict Customer from acessing the Vendor Dashboard
 def check_role_vendor(user):
     try:
@@ -65,7 +65,7 @@ def Register_User(request):
 def Register_Vendor(request):
     if request.user.is_authenticated:
         messages.warning(request, "You are already Logged in.!")
-        return redirect("Dashboard")
+        return redirect("My-Account")
 
     if request.method == "POST":
         form = UserRegisterForm(request.POST)
@@ -81,6 +81,8 @@ def Register_Vendor(request):
             send_verification_email(request, user, mail_subject, template_name)
             vendor = v_form.save(commit=False)
             vendor.user = user
+            vendor_name = v_form.cleaned_data['vendor_name']
+            vendor.vendor_slug = slugify(vendor_name)+str(user.id)
             vendor.user_profile = UserProfile.objects.get(user=user)
             vendor.save()
             messages.success(
