@@ -1,7 +1,8 @@
 {% load static %}
+
 <div
   class="page-section restaurant-detail-image-section"
-  style=" background: url({{vendor.user_profile.cover_photo.url}}) no-repeat scroll 0 0 / cover;"
+  style=" background: url({% if vendor.user_profile.cover_photo %}{{vendor.user_profile.cover_photo.url}}{% else %}{% static 'extra-images/cover-photo01-1-1-359x212.jpg' %} {% endif %}) no-repeat scroll 0 0 / cover;"
 >
   <!-- Container Start -->
   <div class="container">
@@ -13,7 +14,7 @@
           <div class="company-info">
             <div class="img-holder">
               <figure>
-                <img src="{{vendor.user_profile.profile_picture.url}}" alt="" />
+                <img src="{% if vendor.user_profile.profile_picture %}{{vendor.user_profile.profile_picture.url}}{% else %}{% static 'extra-images/blog-image-2-150x150.jpg' %} {% endif %}" alt="" />
               </figure>
             </div>
 
