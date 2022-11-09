@@ -22,8 +22,12 @@
 								<div class="user-holder">
 									<div class="user-message" style="background-color:#1e73be;">
 										<a class="close" href="#"><i class="icon-cross-out"></i></a>
-										<h2>Welcome to your Restaurant.</h2>
-										<p>Restaurant Dashboard gives you quick access to settings and tools for managing your Account like [Change address] and [Change password] . You can [manage Restaurant] Build Menu , Manage Orders, Bookings, Reviews, Memberships, Withdrawals, Earnings, Statements, Change Password, Location and if you are you Restaurant Owner can also [Manage Team]. </p>
+										<h2>Welcome {% if not user.first_name %}
+														{{user}}
+													{% else %}
+														{{user.first_name}}
+													{% endif %} </h2>
+										<p>User Dashboard gives you quick access to settings and tools for managing your Account like [Change profile picture] and [Change password] . You can  Manage Orders, Bookings, Memberships, Withdrawals , Change Password, Location. </p>
 									</div>
 									<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 										<div class="row">

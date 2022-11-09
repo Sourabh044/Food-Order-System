@@ -207,14 +207,14 @@ def Forgot_Password(request):
 
 def Reset_Password_Validate(request, uidb64, token):
     try:
-        print(type(uidb64), type(token))
+        # print(type(uidb64), type(token))
         from django.utils.encoding import force_bytes, force_str
         from django.utils.http import urlsafe_base64_decode
 
         uid = urlsafe_base64_decode(uidb64).decode()
-        print(uid)
+        # print(uid)
         user = User._default_manager.get(id=uid)
-        print(user)
+        # print(user)
     except (OverflowError, User.DoesNotExist, TypeError, ValueError) as e:
         print(e)
         user = None
