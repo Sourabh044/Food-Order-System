@@ -12,14 +12,11 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.tokens import default_token_generator
 from django.template.defaultfilters import slugify
-<<<<<<< HEAD
 
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode
 
 
-=======
->>>>>>> c64ac00cf1bee929791284b6fa6d91e088e004ab
 # Restrict Customer from acessing the Vendor Dashboard
 def check_role_vendor(user):
     try:
@@ -30,11 +27,9 @@ def check_role_vendor(user):
     except:
         raise PermissionDenied
 
-<<<<<<< HEAD
-
-=======
->>>>>>> c64ac00cf1bee929791284b6fa6d91e088e004ab
 # Restrict the Vendor from accessing the Customer
+
+
 def check_role_customer(user):
     try:
         if user.role == 2:
@@ -44,19 +39,13 @@ def check_role_customer(user):
     except:
         raise PermissionDenied
 
-<<<<<<< HEAD
-
-=======
->>>>>>> c64ac00cf1bee929791284b6fa6d91e088e004ab
 # Create your views here.
+
+
 def Register_User(request):
     if request.user.is_authenticated:
         messages.warning(request, "You are already Logged in.!")
-<<<<<<< HEAD
         return redirect("My-Accounts")
-=======
-        return redirect("Dashboard")
->>>>>>> c64ac00cf1bee929791284b6fa6d91e088e004ab
 
     if request.method == "POST":
         form = UserRegisterForm(request.POST)
@@ -101,13 +90,8 @@ def Register_Vendor(request):
             send_verification_email(request, user, mail_subject, template_name)
             vendor = v_form.save(commit=False)
             vendor.user = user
-<<<<<<< HEAD
             vendor_name = v_form.cleaned_data["vendor_name"]
             vendor.vendor_slug = slugify(vendor_name) + str(user.id)
-=======
-            vendor_name = v_form.cleaned_data['vendor_name']
-            vendor.vendor_slug = slugify(vendor_name)+str(user.id)
->>>>>>> c64ac00cf1bee929791284b6fa6d91e088e004ab
             vendor.user_profile = UserProfile.objects.get(user=user)
             vendor.save()
             messages.success(
@@ -129,7 +113,8 @@ def Register_Vendor(request):
         form = UserRegisterForm()
         v_form = VendorRegisterForm()
         return render(
-            request, "accounts/register-vendor.html", {"form": form, "v_form": v_form}
+            request, "accounts/register-vendor.html", {
+                "form": form, "v_form": v_form}
         )
 
 
@@ -169,11 +154,7 @@ def Myaccount(request):
 
 @user_passes_test(check_role_customer)
 def CustomerDashboard(request):
-<<<<<<< HEAD
     if not request.user.is_authenticated:
-=======
-    if request.user.is_anonymous:
->>>>>>> c64ac00cf1bee929791284b6fa6d91e088e004ab
         messages.warning(request, "You Need To login!!")
         return redirect("Login")
     return render(
@@ -181,10 +162,7 @@ def CustomerDashboard(request):
         "accounts/userdashboard.html",
     )
 
-<<<<<<< HEAD
 
-=======
->>>>>>> c64ac00cf1bee929791284b6fa6d91e088e004ab
 @login_required(login_url="Login")
 @user_passes_test(check_role_vendor)
 def VendorDashboard(request):
@@ -198,14 +176,7 @@ def VendorDashboard(request):
 
 def Activate(request, uidb64, token):
     try:
-<<<<<<< HEAD
         # print(type(uidb64), type(token))
-=======
-        print(type(uidb64), type(token))
-        from django.utils.encoding import force_bytes, force_str
-        from django.utils.http import urlsafe_base64_decode
-
->>>>>>> c64ac00cf1bee929791284b6fa6d91e088e004ab
         uid = urlsafe_base64_decode(uidb64).decode()
         user = User._default_manager.get(id=uid)
     except (OverflowError, User.DoesNotExist, TypeError, ValueError) as e:

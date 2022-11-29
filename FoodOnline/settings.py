@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
-<<<<<<< HEAD
     'django.contrib.gis',
     "django.contrib.messages",
     "django.contrib.staticfiles",
@@ -47,14 +46,6 @@ INSTALLED_APPS = [
     "vendor",
     "menu",
     "marketplace",
-=======
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-    "accounts",
-    "vendor",
-    "menu",
-    'marketplace',
->>>>>>> c64ac00cf1bee929791284b6fa6d91e088e004ab
 ]
 
 MIDDLEWARE = [
@@ -82,13 +73,8 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "accounts.context_processors.get_vendor",
                 "accounts.context_processors.get_google_api_key",
-<<<<<<< HEAD
                 # "marketplace.context_processors.get_cart_count",
                 # "marketplace.context_processors.get_cart_amount",
-=======
-                "marketplace.context_processors.get_cart_count",
-                "marketplace.context_processors.get_cart_amount",
->>>>>>> c64ac00cf1bee929791284b6fa6d91e088e004ab
             ],
         },
     },
@@ -103,7 +89,6 @@ WSGI_APPLICATION = "FoodOnline.wsgi.application"
 
 DATABASES = {
     "default": {
-<<<<<<< HEAD
         # "ENGINE": "django.db.backends.postgresql",
         "ENGINE": "django.contrib.gis.db.backends.postgis",
         # 'NAME': BASE_DIR / 'db.sqlite3',
@@ -116,18 +101,6 @@ DATABASES = {
 
 LOGIN_URL = "login-user"
 LOGOUT_REDIRECT_URL = "login-user"
-=======
-        "ENGINE": "django.db.backends.postgresql",
-        # 'NAME': BASE_DIR / 'db.sqlite3',
-        "NAME": config("DB_NAME"),
-        "USER": config("DB_USER"),
-        "HOST": config("DB_HOST"),
-        "PASSWORD": config("DB_PASSWORD"),
-    }
-}
-
-
->>>>>>> c64ac00cf1bee929791284b6fa6d91e088e004ab
 AUTH_USER_MODEL = "accounts.User"
 
 # Password validation
