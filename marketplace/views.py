@@ -3,9 +3,14 @@ from django.shortcuts import render
 from marketplace.context_processors import get_cart_amount, get_cart_count
 from vendor.models import Vendor
 from menu.models import FoodItem, Category
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Q
 from .models import Cart
 from django.contrib.auth.decorators import login_required
+
+from django.contrib.gis.geos import GEOSGeometry
+# ``D`` is a shortcut for ``Distance``
+from django.contrib.gis.measure import D
+from django.contrib.gis.db.models.functions import Distance
 
 # Create your views here.
 
@@ -20,7 +25,8 @@ def VendorDetail(request, vendor_slug):
     if vendor_slug:
         vendor = Vendor.objects.get(vendor_slug=vendor_slug)
         categories = Category.objects.filter(vendor=vendor).prefetch_related(
-            Prefetch("fooditems", queryset=FoodItem.objects.filter(is_available=True))
+            Prefetch("fooditems", queryset=FoodItem.objects.filter(
+                is_available=True))
         )
 
         if request.user.is_authenticated:
@@ -43,7 +49,8 @@ def AddToCart(request, food_id=None):
             try:
                 fooditem = FoodItem.objects.get(id=food_id)
                 try:
-                    chkcart = Cart.objects.get(user=request.user, fooditem=fooditem)
+                    chkcart = Cart.objects.get(
+                        user=request.user, fooditem=fooditem)
                     chkcart.quantity += 1
                     chkcart.save()
                     return JsonResponse(
@@ -97,7 +104,8 @@ def DecreaseCart(request, food_id=None):
             try:
                 fooditem = FoodItem.objects.get(id=food_id)
                 try:
-                    chkcart = Cart.objects.get(user=request.user, fooditem=fooditem)
+                    chkcart = Cart.objects.get(
+                        user=request.user, fooditem=fooditem)
                     if chkcart.quantity > 1:
                         chkcart.quantity -= 1
                         chkcart.save()
@@ -150,7 +158,7 @@ def DeleteCart(request, cart_id=None):
                 cart = Cart.objects.get(id=cart_id)
                 if cart:
                     cart.delete()
-                    return JsonResponse({"status": True, "message": "Cart Deleted.","cart_amount": get_cart_amount(request),})
+                    return JsonResponse({"status": True, "message": "Cart Deleted.", "cart_amount": get_cart_amount(request), })
             except:
                 return JsonResponse(
                     {"status": False, "message": "item not in the cart."}
@@ -173,3 +181,33 @@ def CartView(request):
         return render(request, "marketplace/cart.html", context)
 
 
+def Search(request):
+    '''The lng and lat will be the the cooridinates recieved from the google map api from the front end
+    and these coordinates will be of the address(second field in teh home search) given in the fields'''
+    lat = request.GET['lat']
+    lng = request.GET['lng']
+    radius = request.GET['radius']
+    keyword = request.GET['keyword']
+
+    fetch_vendors_by_food = FoodItem.objects.filter(
+        food_title__icontains=keyword, is_available=True).values_list('vendor', flat=True)
+
+    vendors = Vendor.objects.filter(Q(id__in=fetch_vendors_by_food) | Q(
+        vendor_name__icontains=keyword, is_approved=True, user__is_active=True))
+    print(vendors)
+    if lat and lng and radius:
+        pnt = GEOSGeometry('POINT(%s %s)' % (lng, lat))
+        vendors = Vendor.objects.filter(Q(id__in=fetch_vendors_by_food) | Q(
+            vendor_name__icontains=keyword, is_approved=True, user__is_active=True),
+            user_profile__latlng__distance_lte=(pnt, D(km=radius))).annotate(
+                distance=Distance('user_profile__latlng', pnt)).order_by('distance')
+
+
+        
+        print('\t', vendors)
+        vendor_count = vendors.count()
+        context = {
+            'vendors': vendors,
+            'vendors_count': vendor_count,
+        }
+        return render(request, 'marketplace/listings.html', context)

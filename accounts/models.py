@@ -1,6 +1,6 @@
 from django.db import models
 
-from django.contrib.gis.db import models
+from django.contrib.gis.db import models as gismodels
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 # Create your models here.
@@ -108,7 +108,7 @@ class UserProfile(models.Model):
     pincode = models.CharField(max_length=6, blank=True, null=True)
     latitude = models.CharField(max_length=20, blank=True, null=True)
     longitude = models.CharField(max_length=20, blank=True, null=True)
-    latlng = models.PointField(null=True, blank=True)
+    latlng = gismodels.PointField(null=True, blank=True, srid=4326)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
 

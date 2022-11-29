@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    'rest_framework',
+    'rest_framework.authtoken',
     'mapwidgets',
     "accounts",
     "vendor",
@@ -172,3 +174,14 @@ DEFAULT_FROM_EMAIL = f'FoodOnline <{config("DEFAULT_FROM_EMAIL")}>'
 
 
 GOOGLE_API_KEY = "AIzaSyCo3U6mImBDuwzikz06NvUGYyjNZp3lLhk"
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # add this to enable the Default Token Authentication
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+}

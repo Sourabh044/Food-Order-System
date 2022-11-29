@@ -57,7 +57,7 @@ def Register_User(request):
             user.save()
             mail_subject = "Confirm Your Registration"
             template_name = "accounts/emails/account_verification_email.html"
-            send_verification_email(request, user, mail_subject, template_name)
+            # send_verification_email(request, user, mail_subject, template_name)
             messages.success(request, "Your Account has been created.")
             return redirect("Home")
         else:
@@ -87,7 +87,7 @@ def Register_Vendor(request):
             user.save()
             mail_subject = "Confirm Your Registration"
             template_name = "accounts/emails/account_verification_email.html"
-            send_verification_email(request, user, mail_subject, template_name)
+            # send_verification_email(request, user, mail_subject, template_name)
             vendor = v_form.save(commit=False)
             vendor.user = user
             vendor_name = v_form.cleaned_data["vendor_name"]
@@ -203,7 +203,7 @@ def Forgot_Password(request):
             # sending the password resetting maiil
             mail_subject = "Reset Password"
             template_name = "accounts/emails/account_password_reset_email.html"
-            send_verification_email(request, user, mail_subject, template_name)
+            # send_verification_email(request, user, mail_subject, template_name)
             messages.success(request, "Reset link has been sent")
             return redirect("Login")
         else:
