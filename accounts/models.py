@@ -1,6 +1,9 @@
 from django.db import models
+<<<<<<< HEAD
 
 from django.contrib.gis.db import models
+=======
+>>>>>>> c64ac00cf1bee929791284b6fa6d91e088e004ab
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 # Create your models here.
@@ -52,8 +55,12 @@ class User(AbstractBaseUser):
     username = models.CharField(max_length=50, unique=True)
     email = models.EmailField(max_length=100, unique=True)
     phone_number = models.CharField(max_length=12, blank=True)
+<<<<<<< HEAD
     role = models.PositiveSmallIntegerField(
         choices=ROLE_CHOICE, blank=True, null=True)
+=======
+    role = models.PositiveSmallIntegerField(choices=ROLE_CHOICE, blank=True, null=True)
+>>>>>>> c64ac00cf1bee929791284b6fa6d91e088e004ab
 
     # Required Fields
 
@@ -87,6 +94,7 @@ class User(AbstractBaseUser):
             user_role = "Customer"
         return user_role
 
+<<<<<<< HEAD
     @property
     def get_fullname(self):
         return f'{self.first_name} {self.last_name}'
@@ -95,6 +103,11 @@ class User(AbstractBaseUser):
 class UserProfile(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, blank=True, null=True)
+=======
+
+class UserProfile(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+>>>>>>> c64ac00cf1bee929791284b6fa6d91e088e004ab
     profile_picture = models.ImageField(
         upload_to="user/profile_pictures", blank=True, null=True
     )
@@ -108,7 +121,10 @@ class UserProfile(models.Model):
     pincode = models.CharField(max_length=6, blank=True, null=True)
     latitude = models.CharField(max_length=20, blank=True, null=True)
     longitude = models.CharField(max_length=20, blank=True, null=True)
+<<<<<<< HEAD
     latlng = models.PointField(null=True, blank=True)
+=======
+>>>>>>> c64ac00cf1bee929791284b6fa6d91e088e004ab
     created_at = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
 

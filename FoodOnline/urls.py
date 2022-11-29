@@ -9,6 +9,7 @@ urlpatterns = [
     path("", HomeView, name="Home"),
     path("", include("accounts.urls")),
 
+<<<<<<< HEAD
     # Marketplace
     path("marketplace/", include("marketplace.urls")),
 
@@ -17,6 +18,12 @@ urlpatterns = [
 
     # Search
 
+=======
+    path("marketplace/", include("marketplace.urls")),
+
+
+    path('cart/', CartView,name='CartView'),
+>>>>>>> c64ac00cf1bee929791284b6fa6d91e088e004ab
 
 ] + static(settings.STATIC_URL, document_root=settings.MEDIA_ROOT)
 

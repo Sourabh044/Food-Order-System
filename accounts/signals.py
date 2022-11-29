@@ -1,10 +1,15 @@
 from django.db.models.signals import post_save, pre_save
 from .models import User, UserProfile
 from django.dispatch import receiver
+<<<<<<< HEAD
 
 # from django.contrib import messages
 
 
+=======
+# from django.contrib import messages
+
+>>>>>>> c64ac00cf1bee929791284b6fa6d91e088e004ab
 @receiver(post_save, sender=User)
 def post_save_create_profile(sender, instance, created, **kwargs):
     # print(kwargs)
