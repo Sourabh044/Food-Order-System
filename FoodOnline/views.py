@@ -7,11 +7,9 @@ from django.contrib.gis.db.models.functions import Distance
 
 
 def HomeView(request):
-    if 'lat' in request.GET:
-        lat = request.GET['lat']
-        lng = request.GET['lng']
-        request.session['lat'] = lat
-        request.session['lng'] = lng
+    if 'lat' in request.session:
+        lat = request.session['lat']
+        lng = request.session['lng']
         pnt = GEOSGeometry('POINT(%s %s)' % (lng, lat))
         vendors = Vendor.objects.filter(user_profile__latlng__distance_lte=(pnt, D(km=5))
                                         ).annotate(distance=Distance('user_profile__latlng', pnt)).order_by('distance')[:8]
@@ -27,9 +25,11 @@ def HomeView(request):
         }
         return render(request, "home.html", context)
 
-    elif 'lat' in request.session:
-        lat = request.session['lat']
-        lng = request.session['lng']
+    elif 'lat' in request.GET:
+        lat = request.GET['lat']
+        lng = request.GET['lng']
+        request.session['lat'] = lat
+        request.session['lng'] = lng
         pnt = GEOSGeometry('POINT(%s %s)' % (lng, lat))
         vendors = Vendor.objects.filter(user_profile__latlng__distance_lte=(pnt, D(km=5))
                                         ).annotate(distance=Distance('user_profile__latlng', pnt)).order_by('distance')[:8]
