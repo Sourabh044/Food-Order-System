@@ -44,14 +44,23 @@
 															function showPosition(position) {
 																document.getElementById('id_latitude').value = position.coords.latitude;
 																document.getElementById('id_longitude').value = position.coords.longitude;
-																document.getElementById('loc').innerHTML = 'Got Location <i class="fa fa-duotone fa-circle-check"></i>';
+																document.getElementById('loc').innerHTML = 'Got Location <i class="fa-sharp fa-solid fa-circle-check fa-fade text-success" style=" --fa-bounce-start-scale-x: 1; --fa-bounce-start-scale-y: 1; --fa-bounce-jump-scale-x: 1; --fa-bounce-jump-scale-y: 1; --fa-bounce-land-scale-x: 1; --fa-bounce-land-scale-y: 1; --fa-bounce-rebound: 0;" ></i>';
+																sessionStorage.setItem('lat',position.coords.latitude)
+																sessionStorage.setItem('lng',position.coords.longitude)
+																var lat = sessionStorage.getItem('lat')
+																var lng = sessionStorage.getItem('lng')
+																window.location = '?lat='+ lat + '&lng=' + lng
 															}
 														</script>
-																{% comment %} Click to Get Your Location</input> {% endcomment %}
-														<button required class ='location-field-text filter btn btn-light text-center' id="loc" style="padding:12px;"onclick="getLocation(event)">Get Location</button>
-															{% comment %} <input type="text" required class="location-field-text filter" name='address' value="" id="id_address" placeholder="All Locations"> {% endcomment %}
+														{% if 'lat' in request.session %}
+														<button onclick='return false' required class ='location-field-text filter btn btn-light text-center w-100' id="loc" style="padding:12px;" >Got Location <i class="fa-sharp fa-solid fa-circle-check fa-fade text-success" style=" --fa-bounce-start-scale-x: 1; --fa-bounce-start-scale-y: 1; --fa-bounce-jump-scale-x: 1; --fa-bounce-jump-scale-y: 1; --fa-bounce-land-scale-x: 1; --fa-bounce-land-scale-y: 1; --fa-bounce-rebound: 0;" ></i></button>
+														<input type="hidden" name="lat" required value="{{request.session.lat}}" id="id_latitude">
+														<input type="hidden" name="lng" required value="{{request.session.lng}}" id="id_longitude">
+														{% else %}
+														<button required class ='location-field-text filter btn btn-light text-center w-100' id="loc" style="padding:12px;"onclick="getLocation(event)"> Get Location    <i class="fa-solid fa-circle-info fa-beat-fade text-danger" style="--fa-beat-fade-opacity: 0.67; --fa-beat-fade-scale: 1.075;" ></i></button>
 															<input type="hidden" name="lat" required value="" id="id_latitude">
 															<input type="hidden" name="lng" required value=" " id="id_longitude">
+														{% endif %}
 														</div>
 													</li>
 												</ul>
@@ -360,6 +369,7 @@
 												<div class="post-title">
 													<h5>
 														<a href="#">{{vendor}}</a>
+														{% if vendor.kms %}<p><b>{{vendor.kms}}kms</b> away</p>{% endif %}
 														<span class="sponsored text-color">Sponsored</span>
 													</h5>
 												</div>

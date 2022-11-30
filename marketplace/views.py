@@ -192,13 +192,14 @@ def Search(request):
         lng = request.GET['lng']
         radius = request.GET['radius']
         keyword = request.GET['keyword']
-
+        
         fetch_vendors_by_food_or_byCategory = FoodItem.objects.filter(
             Q(food_title__icontains=keyword, is_available=True) | Q(category__category_name__icontains=keyword, is_available=True)).values_list('vendor', flat=True)
         print(fetch_vendors_by_food_or_byCategory)
         vendors = Vendor.objects.filter(Q(id__in=fetch_vendors_by_food_or_byCategory) | Q(
             vendor_name__icontains=keyword, is_approved=True, user__is_active=True))
         if lat and lng and radius:
+            print(lat, lng, radius)
             pnt = GEOSGeometry('POINT(%s %s)' % (lng, lat))
             vendors = Vendor.objects.filter(Q(id__in=fetch_vendors_by_food_or_byCategory) | Q(
                 vendor_name__icontains=keyword, is_approved=True, user__is_active=True),
