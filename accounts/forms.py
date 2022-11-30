@@ -59,3 +59,23 @@ class UserProfileForm(forms.ModelForm):
         for field in self.fields:
             if field == 'longitude' or field == 'latitude':
                 self.fields[field].widget.attrs['readonly'] = 'readonly'
+
+
+class CustomerForm(forms.ModelForm):
+    email = forms.EmailField()
+
+    class Meta:
+        model = User
+        fields = [
+            "first_name",
+            "last_name",
+            'username',
+            'email',
+            'phone_number'
+        ]
+
+        def __init__(self, *args, **kwargs):
+            super(UserProfileForm, self).__init__(*args, **kwargs)
+            for field in self.fields:
+                if field == 'username':
+                    self.fields[field].widget.attrs['readonly'] = 'readonly'

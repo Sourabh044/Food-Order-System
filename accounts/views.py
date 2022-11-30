@@ -152,14 +152,17 @@ def Myaccount(request):
     return redirect(redirecturl)
 
 
+@login_required(login_url="Login")
 @user_passes_test(check_role_customer)
 def CustomerDashboard(request):
-    if not request.user.is_authenticated:
-        messages.warning(request, "You Need To login!!")
-        return redirect("Login")
+    # if not request.user.is_authenticated:
+    #     messages.warning(request, "You Need To login!!")
+    #     return redirect("Login")
+    user = request.user
+    context = {'user': user}
     return render(
         request,
-        "accounts/userdashboard.html",
+        "accounts/userdashboard.html", context
     )
 
 

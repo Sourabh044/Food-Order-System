@@ -18,4 +18,5 @@ urlpatterns = [
     ),
     path("reset-password/", Reset_Password, name="Reset-Password"),
     path("vendor/", include("vendor.urls")),
+    path('customer/', include("customers.urls")),
 ]
