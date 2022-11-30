@@ -40,6 +40,7 @@
 													<div class="post-title">
 														<h5>
 															<a href="{% url 'Vendor-Detail' vendor.vendor_slug %}	">{{vendor}}</a>
+															{% if vendor.kms %}<p><b>{{vendor.kms}}kms</b> away</p>{% endif %}
 														</h5>
 													</div>
 													<div class="delivery-potions">

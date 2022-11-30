@@ -1,5 +1,5 @@
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from marketplace.context_processors import get_cart_amount, get_cart_count
 from vendor.models import Vendor
 from menu.models import FoodItem, Category
@@ -184,30 +184,35 @@ def CartView(request):
 def Search(request):
     '''The lng and lat will be the the cooridinates recieved from the google map api from the front end
     and these coordinates will be of the address(second field in teh home search) given in the fields'''
-    lat = request.GET['lat']
-    lng = request.GET['lng']
-    radius = request.GET['radius']
-    keyword = request.GET['keyword']
 
-    fetch_vendors_by_food = FoodItem.objects.filter(
-        food_title__icontains=keyword, is_available=True).values_list('vendor', flat=True)
+    if not 'lat' in request.GET:
+        return redirect('marketplace')
+    else:
+        lat = request.GET['lat']
+        lng = request.GET['lng']
+        radius = request.GET['radius']
+        keyword = request.GET['keyword']
 
-    vendors = Vendor.objects.filter(Q(id__in=fetch_vendors_by_food) | Q(
-        vendor_name__icontains=keyword, is_approved=True, user__is_active=True))
-    print(vendors)
-    if lat and lng and radius:
-        pnt = GEOSGeometry('POINT(%s %s)' % (lng, lat))
-        vendors = Vendor.objects.filter(Q(id__in=fetch_vendors_by_food) | Q(
-            vendor_name__icontains=keyword, is_approved=True, user__is_active=True),
-            user_profile__latlng__distance_lte=(pnt, D(km=radius))).annotate(
-                distance=Distance('user_profile__latlng', pnt)).order_by('distance')
+        fetch_vendors_by_food_or_byCategory = FoodItem.objects.filter(
+            Q(food_title__icontains=keyword, is_available=True) | Q(category__category_name__icontains=keyword, is_available=True)).values_list('vendor', flat=True)
+        print(fetch_vendors_by_food_or_byCategory)
+        vendors = Vendor.objects.filter(Q(id__in=fetch_vendors_by_food_or_byCategory) | Q(
+            vendor_name__icontains=keyword, is_approved=True, user__is_active=True))
+        if lat and lng and radius:
+            pnt = GEOSGeometry('POINT(%s %s)' % (lng, lat))
+            vendors = Vendor.objects.filter(Q(id__in=fetch_vendors_by_food_or_byCategory) | Q(
+                vendor_name__icontains=keyword, is_approved=True, user__is_active=True),
+                user_profile__latlng__distance_lte=(pnt, D(km=radius))
+            ).annotate(distance=Distance('user_profile__latlng', pnt)).order_by('distance')
 
+            print(vendors)
 
-        
-        print('\t', vendors)
-        vendor_count = vendors.count()
-        context = {
-            'vendors': vendors,
-            'vendors_count': vendor_count,
-        }
-        return render(request, 'marketplace/listings.html', context)
+            for v in vendors:
+                v.kms = round(v.distance.km, 1)
+
+            vendor_count = vendors.count()
+            context = {
+                'vendors': vendors,
+                'vendors_count': vendor_count,
+            }
+            return render(request, 'marketplace/listings.html', context)
