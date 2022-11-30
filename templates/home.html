@@ -31,17 +31,35 @@
 												<ul>
 													<li class="select-location">
 														<div class="foodbakery-locations-fields-group foodbakery-focus-out">
-															<input type="text" required class="location-field-text filter" name='address' value="" id="id_address" placeholder="All Locations">
-															<input type="hidden" name="lat" value="30.709710577503614" id="id_latitude">
-															<input type="hidden" name="lng" value="76.68957497924566" id="id_longitude">
+														<script>
+															function getLocation(event) {
+																event.preventDefault();
+																if (navigator.geolocation) {
+																navigator.geolocation.getCurrentPosition(showPosition);
+																} else {
+																x.innerHTML = "Geolocation is not supported by this browser.";
+																}
+															}
+
+															function showPosition(position) {
+																document.getElementById('id_latitude').value = position.coords.latitude;
+																document.getElementById('id_longitude').value = position.coords.longitude;
+																document.getElementById('loc').innerHTML = 'Got Location <i class="fa fa-duotone fa-circle-check"></i>';
+															}
+														</script>
+																{% comment %} Click to Get Your Location</input> {% endcomment %}
+														<button required class ='location-field-text filter btn btn-light text-center' id="loc" style="padding:12px;"onclick="getLocation(event)">Get Location</button>
+															{% comment %} <input type="text" required class="location-field-text filter" name='address' value="" id="id_address" placeholder="All Locations"> {% endcomment %}
+															<input type="hidden" name="lat" required value="" id="id_latitude">
+															<input type="hidden" name="lng" required value=" " id="id_longitude">
 														</div>
 													</li>
 												</ul>
 											</div>
 										</div>
 										<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 mt-2">
-											<select name="radius" id="radius">
-											<option value="" selected>Choose Location</option>
+											<select required name="radius" id="radius">
+											<option value="" selected>Choose Distance</option>
 											<option value="5" >5 KM</option>
 											<option value="10" >10 KM</option>
 											<option value="15" >15 KM</option>
