@@ -15,8 +15,6 @@ def get_cart_count(request):
         except:
             cart_count = 0
         return dict(cart_count=cart_count)
-    else:
-        pass
 
 
 def get_cart_amount(request):
@@ -29,9 +27,6 @@ def get_cart_amount(request):
             fooditem = items.fooditem
             subtotal += fooditem.price * items.quantity
         total = subtotal + tax
-        print(subtotal)
-        print(total)
-
         return dict(subtotal=subtotal, tax=tax, total=total)
     else:
         pass

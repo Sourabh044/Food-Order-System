@@ -54,8 +54,8 @@ class UserProfileForm(forms.ModelForm):
         #     'latlng': GooglePointFieldWidget,
         # }
 
-    def __init__(self, *args, **kwargs) :
-        super(UserProfileForm,self).__init__(*args,**kwargs)    
+    def __init__(self, *args, **kwargs):
+        super(UserProfileForm, self).__init__(*args, **kwargs)
         for field in self.fields:
             if field == 'longitude' or field == 'latitude':
                 self.fields[field].widget.attrs['readonly'] = 'readonly'
@@ -74,8 +74,8 @@ class CustomerForm(forms.ModelForm):
             'phone_number'
         ]
 
-        def __init__(self, *args, **kwargs):
-            super(UserProfileForm, self).__init__(*args, **kwargs)
-            for field in self.fields:
-                if field == 'username':
-                    self.fields[field].widget.attrs['readonly'] = 'readonly'
+    def __init__(self, *args, **kwargs):
+        super(CustomerForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            if field == 'username':
+                self.fields[field].widget.attrs['readonly'] = 'readonly'

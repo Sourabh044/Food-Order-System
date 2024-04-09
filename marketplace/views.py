@@ -11,7 +11,8 @@ from django.contrib.gis.geos import GEOSGeometry
 # ``D`` is a shortcut for ``Distance``
 from django.contrib.gis.measure import D
 from django.contrib.gis.db.models.functions import Distance
-
+from orders.forms import OrderForm
+from accounts.models import UserProfile
 # Create your views here.
 
 
@@ -182,8 +183,8 @@ def CartView(request):
 
 
 def Search(request):
-    '''The lng and lat will be the the cooridinates recieved from the google map api from the front end
-    and these coordinates will be of the address(second field in teh home search) given in the fields'''
+    '''The lng and lat will be the the coordinates recieved from the google map api from the front end
+    and these coordinates will be of the address(second field in the home search) given in the fields'''
 
     if not 'lat' in request.GET:
         return redirect('marketplace')
@@ -192,21 +193,19 @@ def Search(request):
         lng = request.GET['lng']
         radius = request.GET['radius']
         keyword = request.GET['keyword']
-        
+
         fetch_vendors_by_food_or_byCategory = FoodItem.objects.filter(
             Q(food_title__icontains=keyword, is_available=True) | Q(category__category_name__icontains=keyword, is_available=True)).values_list('vendor', flat=True)
-        print(fetch_vendors_by_food_or_byCategory)
+        # print(fetch_vendors_by_food_or_byCategory)
         vendors = Vendor.objects.filter(Q(id__in=fetch_vendors_by_food_or_byCategory) | Q(
             vendor_name__icontains=keyword, is_approved=True, user__is_active=True))
         if lat and lng and radius:
-            print(lat, lng, radius)
+            # print(lat, lng, radius)
             pnt = GEOSGeometry('POINT(%s %s)' % (lng, lat))
-            vendors = Vendor.objects.filter(Q(id__in=fetch_vendors_by_food_or_byCategory) | Q(
-                vendor_name__icontains=keyword, is_approved=True, user__is_active=True),
-                user_profile__latlng__distance_lte=(pnt, D(km=radius))
+            vendors = Vendor.objects.filter(Q(id__in=fetch_vendors_by_food_or_byCategory) | Q(vendor_name__icontains=keyword, is_approved=True, user__is_active=True),user_profile__latlng__distance_lte=(pnt, D(km=radius))
             ).annotate(distance=Distance('user_profile__latlng', pnt)).order_by('distance')
 
-            print(vendors)
+            # print(vendors)
 
             for v in vendors:
                 v.kms = round(v.distance.km, 1)
@@ -217,3 +216,31 @@ def Search(request):
                 'vendors_count': vendor_count,
             }
             return render(request, 'marketplace/listings.html', context)
+
+
+@login_required(login_url='Login')
+def Checkout(request):
+    cart = Cart.objects.filter(user=request.user).order_by("created_at")
+    cart_count = cart.count()
+    if cart_count <= 0:
+        return redirect('marketplace')
+
+    uprofile = UserProfile.objects.get(user=request.user)
+    default_values = {
+        'first_name':  request.user.first_name,
+        'last_name':  request.user.last_name,
+        'phone': request.user.phone_number,
+        'email': request.user.email,
+        'address': uprofile.address,
+        'country': uprofile.country,
+        'state': uprofile.state,
+        'city': uprofile.city,
+        'pin_code':  uprofile.pincode,
+    }
+    form = OrderForm(initial=default_values)
+    context = {
+        "cart": cart,
+        "cart_amount": get_cart_amount(request),
+        'form': form
+    }
+    return render(request, 'marketplace/checkout.html', context)

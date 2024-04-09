@@ -3,7 +3,7 @@ from django.urls import include, path
 from FoodOnline.views import HomeView
 from django.conf import settings
 from django.conf.urls.static import static
-from marketplace.views import CartView, Search
+from marketplace.views import CartView, Search, Checkout
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", HomeView, name="Home"),
@@ -17,6 +17,10 @@ urlpatterns = [
 
     # Search
     path('search/', Search, name='Search'),
+
+    # Checkout
+    path('checkout/', Checkout, name='Checkout'),
+    path('orders/', include('orders.urls')),
 
     path('api/', include('api.urls')),
 

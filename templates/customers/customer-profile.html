@@ -167,10 +167,25 @@
 															<label class='text-danger'>{{user_profile_form.longitude.errors}}</label>
 														</div>
 														<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-															<div class="">
-																<label>latlng *</label>
-																{{user_profile_form.latlng}}
-															</div>
+															<script>
+															function getLocation(event) {
+																event.preventDefault();
+																if (navigator.geolocation) {
+																navigator.geolocation.getCurrentPosition(showPosition);
+																} else {
+																x.innerHTML = "Geolocation is not supported by this browser.";
+																}
+															}
+
+															function showPosition(position) {
+																document.getElementById('id_latitude').value = position.coords.latitude;
+																document.getElementById('id_longitude').value = position.coords.longitude;
+																document.getElementById('loc').innerHTML = 'Got Location <i class="fa-sharp fa-solid fa-circle-check fa-fade text-success" style=" --fa-bounce-start-scale-x: 1; --fa-bounce-start-scale-y: 1; --fa-bounce-jump-scale-x: 1; --fa-bounce-jump-scale-y: 1; --fa-bounce-land-scale-x: 1; --fa-bounce-land-scale-y: 1; --fa-bounce-rebound: 0;" ></i>';
+																sessionStorage.setItem('latitude',position.coords.latitude)
+																sessionStorage.setItem('longitude',position.coords.longitude)
+															}
+														</script>
+															<button required class ='location-field-text filter btn btn-light text-center w-100' id="loc" style="padding:12px;"onclick="getLocation(event)"> Get Location    <i class="fa-solid fa-circle-info fa-beat-fade text-danger" style="--fa-beat-fade-opacity: 0.67; --fa-beat-fade-scale: 1.075;" ></i></button>
 															<label class='text-danger'>{{user_profile_form.longitude.errors}}</label>
 														</div>
 													</div>
