@@ -78,8 +78,8 @@ TEMPLATES = [
                 "accounts.context_processors.get_vendor",
                 "accounts.context_processors.get_user_profile",
                 "accounts.context_processors.get_google_api_key",
-                # "marketplace.context_processors.get_cart_count",
-                # "marketplace.context_processors.get_cart_amount",
+                "marketplace.context_processors.get_cart_count",
+                "marketplace.context_processors.get_cart_amount",
             ],
         },
     },
@@ -100,7 +100,7 @@ DATABASES = {
         "NAME": 'foodonline',
         "USER": 'postgres',
         "HOST": '',
-        "PASSWORD": '',
+        "PASSWORD": 'postgres',
     }
 }
 

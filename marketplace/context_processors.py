@@ -15,7 +15,7 @@ def get_cart_count(request):
         except:
             cart_count = 0
         return dict(cart_count=cart_count)
-
+    return dict()
 
 def get_cart_amount(request):
     subtotal = 0
@@ -29,4 +29,4 @@ def get_cart_amount(request):
         total = subtotal + tax
         return dict(subtotal=subtotal, tax=tax, total=total)
     else:
-        pass
+        return dict()
